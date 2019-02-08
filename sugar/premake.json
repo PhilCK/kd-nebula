@@ -1,0 +1,31 @@
+{
+        "projects" : [
+                {
+                        "name" : "neb_sugar",
+                        "kind" : "SharedLib",
+                        "language" : "C",
+
+                        "files" : [
+                                "./**.json",
+                                "./**.h",
+                                "./**.c",
+                                "../common/**.h",
+                                "../common/**.c"
+                        ],
+
+                        "include_dirs" : [
+                                "./",
+                                "../common/"
+                        ],
+
+                        "dependencies" : [
+                                "karbon_drive",
+                                "nebula"
+                        ],
+
+                        "links-windows" : [
+                                "opengl32.lib"
+                        ]
+                }
+        ]
+}
