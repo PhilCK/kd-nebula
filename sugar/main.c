@@ -82,7 +82,7 @@ nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height)
         (void)nb_rdr;
 
         /* clear screen */
-        glClearColor(0.07f,0.07f,0.02f,1);
+        glClearColor(0.07f, 0.07f, 0.02f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* get nebula render data */
@@ -95,10 +95,10 @@ nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height)
 
         /* prepare pass */
         GLfloat proj[4][4] = {
-                { 2.f,  0.f,  0.f, 0.f },
-                { 0.f, -2.f,  0.f, 0.f },
-                { 0.f,  0.f, -1.f, 0.f },
-                { -1.f, 1.f,  0.f, 1.f },
+                { +2.f, +0.f, +0.f, +0.f },
+                { +0.f, -2.f, +0.f, +0.f },
+                { +0.f, +0.f, -1.f, +0.f },
+                { -1.f, +1.f, +0.f, +1.f },
         };
 
         proj[0][0] /= (GLfloat)vp_width;
