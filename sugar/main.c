@@ -9,6 +9,8 @@
 #include <GL/gl3w.h>
 
 #include <assert.h>
+#include <string.h>
+
 
 /* ----------------------------------------------------------- Application -- */
 
@@ -34,6 +36,7 @@ struct neb_sugar {
 
 void
 nb_state_from_kd(nbc_ctx_t nb_core, uint64_t kd_events) {
+
         if(kd_events & KD_EVENT_INPUT_MS) {
                 kd_result kd_ok = KD_RESULT_OK;
                 nb_result nb_ok = NB_OK;
@@ -79,7 +82,7 @@ nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height)
         (void)nb_rdr;
 
         /* clear screen */
-        glClearColor(1,1,0,1);
+        glClearColor(0.07f,0.07f,0.02f,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /* get nebula render data */
@@ -92,10 +95,10 @@ nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height)
 
         /* prepare pass */
         GLfloat proj[4][4] = {
-                { 2.f, 0.f, 0.f, 0.f },
-                { 0.f, -2.f, 0.f, 0.f },
-                { 0.f, 0.f, -1.f, 0.f },
-                { -1.f, 1.f, 0.f, 1.f },
+                { 2.f,  0.f,  0.f, 0.f },
+                { 0.f, -2.f,  0.f, 0.f },
+                { 0.f,  0.f, -1.f, 0.f },
+                { -1.f, 1.f,  0.f, 1.f },
         };
 
         proj[0][0] /= (GLfloat)vp_width;
@@ -137,10 +140,12 @@ nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height)
         glEnable(GL_SCISSOR_TEST);
 
         /* render */
-        for (unsigned int list_idx = 0; list_idx < rd.cmd_list_count; list_idx++) {
+        unsigned int list_idx;
+        unsigned int i;
+        for (list_idx = 0; list_idx < rd.cmd_list_count; list_idx++) {
                 struct nb_render_cmd_list * cmd_list = rd.cmd_lists + list_idx;
 
-                for (unsigned int i = 0; i < cmd_list->count; ++i) {
+                for (i = 0; i < cmd_list->count; ++i) {
                         struct nb_render_cmd * cmd = cmd_list->cmds + i;
 
                         if (cmd->type == NB_RENDER_CMD_TYPE_SCISSOR) {
@@ -183,6 +188,18 @@ think() {
         uint64_t kd_events = 0;
         kd_ok = kd_events_get(&kd_events);
         assert(kd_ok == KD_RESULT_OK && "Failed to get KD events");
+
+        if(kd_events & KD_EVENT_INPUT_KB) {
+                struct kd_keyboard_desc kd_desc;
+                kd_ok = kd_input_get_keyboards(&kd_desc);
+                assert(kd_ok == KD_RESULT_OK && "Failed to get KD KB");
+                assert(kd_desc.kb_count >= 1 && "No KB");
+
+                if(kd_desc.kb_state[0][KD_KB_ESC] & KD_KEY_UP_EVENT) {
+                        kd_log(KD_LOG_INFO, "Shutdown Request");
+                        kd_ctx_close();
+                }
+        };
 
         /* Nebula Frame */
         nb_result nb_ok = NB_OK;
