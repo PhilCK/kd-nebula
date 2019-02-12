@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 
 /* ----------------------------------------------------------- Application -- */
@@ -78,9 +79,12 @@ nb_state_from_kd(nbc_ctx_t nb_core, uint64_t kd_events) {
 
 
 void
-nb_render_to_gl(nbr_ctx_t nb_rdr, struct nb_gl *gl, int vp_width, int vp_height) {
-        (void)nb_rdr;
-
+nb_render_to_gl(
+        nbr_ctx_t nb_rdr,
+        struct nb_gl *gl,
+        int vp_width,
+        int vp_height)
+{
         /* clear screen */
         glClearColor(0.07f, 0.07f, 0.02f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -213,6 +217,12 @@ think() {
 
         const struct nb_window *win = 0;
         win = nbs_window_begin(nb.sugar_ctx, "Test Window", 0xFF0000FF);
+        if(nbs_button(nb.sugar_ctx, win, "Hello")) {
+                printf("button clicked\n");
+        }
+        nbs_window_end(nb.sugar_ctx, win);
+
+        win = nbs_window_begin(nb.sugar_ctx, "Test Window 2", 0xFFFF00FF);
         nbs_window_end(nb.sugar_ctx, win);
 
         nb_ok = nbs_frame_submit(nb.sugar_ctx);
